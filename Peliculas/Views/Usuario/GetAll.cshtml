@@ -1,0 +1,84 @@
+﻿@model ML.Users
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h1>RANDOM USER</h1>
+    <p>Para agregar un nuevo usuario dar clic en el botón</p>
+    <button id="CargarUsuario" class="btn btn-primary">Cargar Más Usuarios</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Email</th>
+            <th>Celular</th>
+            <th>Edad</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Foto</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.results != null)
+        {
+            foreach (var users in Model.results)
+            {
+                <tr>
+                    <td>@users.name.first</td>
+                    <td>@users.location.street.name, @users.location.city, @users.location.state, @users.location.country, @users.location.postcode</td>
+                    <td>@users.email</td>
+                    <td>@users.phone</td>
+                    <td>@users.registered.age</td>
+                    <td>@users.dob.date</td>
+                    <td>
+                        <img src="@users.picture.large" style="width:50px;height:50px;" />
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center">No hay usuarios disponibles</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#CargarUsuario").on("click", function () {
+            $.ajax({
+                url: '@Url.Action("GetMoreUsers", "Usuario")',
+                type: 'GET',
+                success: function (data) {
+                    if (data) {
+                        data.forEach(user => {
+                            let row = `<tr>
+                                <td>${user.name.first}</td>
+                                <td>${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}, ${user.location.postcode}</td>
+                                <td>${user.email}</td>
+                                <td>${user.phone}</td>
+                                <td>${user.registered.age}</td>
+                                <td>${user.dob.date}</td>
+                                <td><img src="${user.picture.large}" style="width:50px;height:50px;" /></td>
+                            </tr>`;
+                            $("table tbody").append(row);
+                        });
+                    } else {
+                        alert("No se pudieron cargar más usuarios.");
+                    }
+                },
+                error: function () {
+                    alert("Error al cargar usuarios.");
+                }
+            });
+        });
+    });
+</script>
+

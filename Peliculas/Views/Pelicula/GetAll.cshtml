@@ -1,0 +1,30 @@
+﻿@model ML.Pelis
+
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>GetAll</h2>
+<div class="container">
+    <div class="row">
+       
+            @foreach (ML.DatosPelicula datos in Model.results)
+            {
+                <div class="col-3">
+                    <div class="card">
+                        <img class="card-img-top" src="http://image.tmdb.org/t/p/w1280/@datos.poster_path" alt="Card image cap" />
+                        <div class="card-body">
+                            <h5 class="card-title">@datos.original_title</h5>
+                            <p class="card-text">@datos.overview</p>
+                            @Html.ActionLink("Agregar a Favoritos", "AddFavoritas", new { id = datos.id }, new { @class = "btn btn-danger" })
+                        </div>
+                    </div>
+                </div>
+            }
+        
+   
+    </div>
+</div>
+
